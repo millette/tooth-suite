@@ -6,11 +6,46 @@
     "build": "next build",
     "start": "next start"
   },
+  "author": {
+    "name": "Robin Millette",
+    "email": "robin@millette.info",
+    "url": "http://robin.millette.info"
+  },
+  "engines": {
+    "node": ">= 10.9.0"
+  },
+  "license": "AGPL-3.0",
   "dependencies": {
     "@mdx-js/mdx": "1.0.15",
     "@zeit/next-mdx": "1.2.0",
     "next": "^8.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
+  },
+  "lint-staged": {
+    "*.{js,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "es5",
+    "arrowParens": "always"
+  },
+  "devDependencies": {
+    "ava": "^1.4.1",
+    "coveralls": "^3.0.3",
+    "dependency-check": "^3.3.0",
+    "healthier": "^2.0.0",
+    "husky": "^2.1.0",
+    "lint-staged": "^8.1.5",
+    "nyc": "^14.0.0",
+    "prettier": "^1.17.0"
   }
 }
