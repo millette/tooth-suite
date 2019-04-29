@@ -42,6 +42,7 @@
     "arrowParens": "always"
   },
   "devDependencies": {
+    "@mdx-js/react": "^1.0.15",
     "ava": "^1.4.1",
     "coveralls": "^3.0.3",
     "healthier": "^2.0.0",
