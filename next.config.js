@@ -1,11 +1,7 @@
-const withMDX = require("@next/mdx")({
-  // extension: /\.mdx?$/,
-  /*
-  options: {
-    mdPlugins
-  }
-  */
-})
+"use strict"
+
+// npm
+const withMDX = require("@next/mdx")()
 
 module.exports = withMDX({
   pageExtensions: ["js", "jsx", "mdx"],
