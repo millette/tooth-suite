@@ -23,7 +23,7 @@
     "react-dom": "^16.8.6"
   },
   "lint-staged": {
-    "*.{js,json,md}": [
+    "*.{js,json,md,mdx}": [
       "prettier --write",
       "git add"
     ]
