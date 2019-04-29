@@ -1,7 +1,11 @@
 {
-  "name": "with-mdx",
+  "name": "tooth-suite",
   "version": "0.0.0",
   "scripts": {
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "deps": "dependency-check . && dependency-check . --unused --no-dev",
+    "docs": "documentation build index.js -f md -o docs.md && prettier --write docs.md",
+    "test": "healthier && nyc ava",
     "dev": "next",
     "build": "next build",
     "start": "next start"
@@ -42,6 +46,7 @@
     "ava": "^1.4.1",
     "coveralls": "^3.0.3",
     "dependency-check": "^3.3.0",
+    "documentation": "^10.1.0",
     "healthier": "^2.0.0",
     "husky": "^2.1.0",
     "lint-staged": "^8.1.5",
