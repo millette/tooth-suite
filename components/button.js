@@ -1,7 +1,4 @@
-// const React = require('react')
-
-// export default ({ children }) => (
-const Button = ({ children }) => (
+export default ({ children }) => (
   <button
     style={{
       borderRadius: "3px",
@@ -15,5 +12,3 @@ const Button = ({ children }) => (
     {children}
   </button>
 )
-
-module.exports = button
