@@ -1,7 +1,6 @@
 {
   "name": "tooth-suite",
   "version": "0.0.0",
-  "main": "index.js",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "healthier && nyc ava",
