@@ -1,0 +1,3 @@
+.icon.icon-link::before {
+  content: " # ";
+}
