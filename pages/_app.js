@@ -8,20 +8,28 @@ import Button from "../components/button.js"
 
 const components = {
   Button,
-  a: (props) =>
-    props.href.indexOf("//") === -1 ? (
-      <Link href={props.href}>
-        <a>{props.children}</a>
+  a: ({ href, children }) =>
+    href.indexOf("://") === -1 ? (
+      <Link href={href}>
+        <a>{children}</a>
       </Link>
     ) : (
-      <a target="_blank" rel="noopener noreferrer" href={props.href}>
-        ⧉&nbsp;{props.children}
+      <a target="_blank" rel="noopener noreferrer" href={href}>
+        <sup>⧉</sup>&nbsp;{children}
       </a>
     ),
 }
 
-export default ({ Component, pageProps }) => (
-  <MDXProvider components={components}>
-    <Component {...pageProps} />
-  </MDXProvider>
-)
+export default ({ Component, pageProps }) => {
+  // console.log('COMPONENTED')
+  // console.log('COMPONENT:', Component)
+  // console.log('pageProps:', pageProps && Object.keys(pageProps))
+  // console.log('COMPONENT-isMDX:', Component.isMDXComponent)
+  // console.log('COMPONENT-name:', Component.displayName)
+  // console.log('COMPONENT-button:', Component.Button)
+  return (
+    <MDXProvider components={components}>
+      <Component {...pageProps} />
+    </MDXProvider>
+  )
+}
