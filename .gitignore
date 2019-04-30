@@ -2,3 +2,4 @@ node_modules
 .next
 tooth-suite.code-workspace
 .nyc_output
+static/dentists.json
