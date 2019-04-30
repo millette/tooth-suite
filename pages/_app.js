@@ -5,9 +5,11 @@ import { MDXProvider } from "@mdx-js/react"
 
 // self
 import Button from "../components/button.js"
+import Dentists from "../components/dentists.js"
 
 const components = {
   Button,
+  Dentists,
   a: ({ href, children }) =>
     href.indexOf("://") === -1 ? (
       <Link href={href}>
