@@ -1,3 +1,5 @@
-.icon.icon-link::before {
-  content: " # ";
+h2 .icon.icon-link::before, h3 .icon.icon-link::before {
+  content: "#";
+  padding-right: 0.25rem;
+  opacity: 0.5;
 }
