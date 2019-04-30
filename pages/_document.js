@@ -10,6 +10,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          <link rel="stylesheet" href="/static/style.css" />
           <link
             rel="stylesheet"
             title="Light"
@@ -24,6 +25,7 @@ class MyDocument extends Document {
             integrity="sha256-a4zpugsKZqeQuXHZob2UNRXchaLIJRFdXCdi11HgAKY="
             crossOrigin="anonymous"
           />
+          <style />
         </Head>
         <body>
           <Main />
