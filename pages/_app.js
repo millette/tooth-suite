@@ -20,16 +20,8 @@ const components = {
     ),
 }
 
-export default ({ Component, pageProps }) => {
-  // console.log('COMPONENTED')
-  // console.log('COMPONENT:', Component)
-  // console.log('pageProps:', pageProps && Object.keys(pageProps))
-  // console.log('COMPONENT-isMDX:', Component.isMDXComponent)
-  // console.log('COMPONENT-name:', Component.displayName)
-  // console.log('COMPONENT-button:', Component.Button)
-  return (
-    <MDXProvider components={components}>
-      <Component {...pageProps} />
-    </MDXProvider>
-  )
-}
+export default ({ Component, pageProps }) => (
+  <MDXProvider components={components}>
+    <Component {...pageProps} />
+  </MDXProvider>
+)
