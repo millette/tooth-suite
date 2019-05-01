@@ -1,29 +1,74 @@
-import React, { useState, useEffect } from "react"
+// npm
+import { useState, useEffect } from "react"
 
-export default () => {
-  const [results, setResults] = useState()
+// self
+import Dentist from "./dentist"
+
+const num = () => Math.max(1000, Math.floor(Math.random() * 10000))
+
+const byRating = (a, b) => {
+  if (a.rating > b.rating) return 1
+  if (a.rating < b.rating) return -1
+  if (a.user_ratings_total > b.user_ratings_total) return 1
+  if (a.user_ratings_total < b.user_ratings_total) return -1
+}
+
+export default ({ step = 0.1 }) => {
+  const [dentists, setDentists] = useState()
+  const [selectedDentists, setSelectedDentists] = useState()
+  const [min, setMin] = useState(5)
+  const [dir, setDir] = useState(-step)
+
+  const minRating = ({ rating }) => rating >= min
 
   useEffect(() => {
-    if (results) return
     fetch("/static/dentists.json")
       .then((res) => res.json())
-      .then((json) => json.results)
-      .then(setResults)
-  })
+      .then(({ results }) =>
+        setDentists(
+          results.map((x) => ({
+            ...x,
+            phone: `514-555-${num()}`,
+          }))
+        )
+      )
+  }, [])
+
+  useEffect(() => {
+    if (!dentists) return
+    setSelectedDentists(
+      dentists
+        .filter(minRating)
+        .sort(byRating)
+        .reverse()
+    )
+  }, [dentists, min])
+
+  const click = () => {
+    const n = min + 2 * dir
+    if (n < 2.5 || n > 5) setDir(-dir)
+    setMin(min + dir)
+  }
 
   return (
     <div>
-      <h2>List</h2>
-      {results ? (
-        <ul>
-          {results.map((dentist, i) => (
-            <li key={i}>
-              <pre>{JSON.stringify(dentist, null, "  ")}</pre>
-            </li>
-          ))}
-        </ul>
+      <h2
+        title="Click to change minimal rating"
+        style={{ cursor: "pointer" }}
+        onClick={click}
+      >
+        List{" "}
+        <small>
+          ({Math.round(min * 10) / 10} min rating
+          {selectedDentists && `/${selectedDentists.length} total`})
+        </small>
+      </h2>
+      {selectedDentists ? (
+        selectedDentists.map((dentist) => (
+          <Dentist key={dentist.place_id} {...dentist} />
+        ))
       ) : (
-        <p>Loading...</p>
+        <code>Loading...</code>
       )}
     </div>
   )
