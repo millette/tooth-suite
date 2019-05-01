@@ -12,7 +12,7 @@ const components = {
   Dentists,
   a: ({ href, children }) =>
     href.indexOf("://") === -1 ? (
-      <Link href={href}>
+      <Link href={href} prefetch>
         <a>{children}</a>
       </Link>
     ) : (
