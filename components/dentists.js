@@ -1,10 +1,16 @@
 // npm
 import { useState, useEffect } from "react"
+import { get, set } from "idb-keyval"
 
 // self
 import Dentist from "./dentist"
 
 const num = () => Math.max(1000, Math.floor(Math.random() * 10000))
+
+const fix = (x) => ({
+  ...x,
+  phone: `514-555-${num()}`,
+})
 
 const byRating = (a, b) => {
   if (a.rating > b.rating) return 1
@@ -22,16 +28,18 @@ export default ({ step = 0.1 }) => {
   const minRating = ({ rating }) => rating >= min
 
   useEffect(() => {
-    fetch("/static/dentists.json")
-      .then((res) => res.json())
-      .then(({ results }) =>
-        setDentists(
-          results.map((x) => ({
-            ...x,
-            phone: `514-555-${num()}`,
-          }))
-        )
-      )
+    const key = "data"
+    get(key)
+      .then((val) => {
+        if (val) return val
+        return fetch("/static/dentists.json")
+          .then((res) => res.json())
+          .then((json) => {
+            const results = json.results.map(fix)
+            return set(key, results).then(() => results)
+          })
+      })
+      .then(setDentists)
   }, [])
 
   useEffect(() => {
