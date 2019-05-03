@@ -3,3 +3,5 @@ node_modules
 tooth-suite.code-workspace
 .nyc_output
 static/dentists.json
+static/data-1.json
+static/data-2.json

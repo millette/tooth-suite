@@ -21,26 +21,34 @@ const byRating = (a, b) => {
 
 export default ({ step = 0.1 }) => {
   const [dentists, setDentists] = useState()
-  const [selectedDentists, setSelectedDentists] = useState()
+  const [selectedDentists, setSelectedDentists] = useState([])
+  const [near, setNear] = useState("")
   const [min, setMin] = useState(5)
   const [dir, setDir] = useState(-step)
 
   const minRating = ({ rating }) => rating >= min
 
   useEffect(() => {
-    const key = "data"
-    get(key)
+    if (!near) {
+      if (dentists && dentists.length) setDentists([])
+      return
+    }
+    get(near)
       .then((val) => {
         if (val) return val
-        return fetch("/static/dentists.json")
+        return fetch(`/static/${near}.json`)
           .then((res) => res.json())
           .then((json) => {
             const results = json.results.map(fix)
-            return set(key, results).then(() => results)
+            return set(near, results).then(() => results)
           })
       })
       .then(setDentists)
-  }, [])
+      .catch((e) => {
+        console.error("OY2", e)
+        setDentists([])
+      })
+  }, [near])
 
   useEffect(() => {
     if (!dentists) return
@@ -58,8 +66,14 @@ export default ({ step = 0.1 }) => {
     setMin(min + dir)
   }
 
+  const submit = (ev) => {
+    ev.preventDefault()
+    const near = new FormData(ev.target).get("near")
+    setNear(near)
+  }
+
   return (
-    <div>
+    <>
       <h2
         title="Click to change minimal rating"
         style={{ cursor: "pointer" }}
@@ -71,13 +85,33 @@ export default ({ step = 0.1 }) => {
           {selectedDentists && `/${selectedDentists.length} total`})
         </small>
       </h2>
-      {selectedDentists ? (
-        selectedDentists.map((dentist) => (
-          <Dentist key={dentist.place_id} {...dentist} />
-        ))
-      ) : (
-        <code>Loading...</code>
-      )}
-    </div>
+      <div>
+        <form onSubmit={submit}>
+          <label>
+            Search (enter to submit){" "}
+            <input
+              name="near"
+              defaultValue={near}
+              placeholder="H2K 4B2"
+              type="text"
+            />
+          </label>
+          {near && (
+            <p>
+              Near: <b>{near}</b>.
+            </p>
+          )}
+        </form>
+      </div>
+      <div>
+        {selectedDentists.length ? (
+          selectedDentists.map((dentist) => (
+            <Dentist key={dentist.place_id} {...dentist} />
+          ))
+        ) : (
+          <p>Enter a postal code to search near.</p>
+        )}
+      </div>
+    </>
   )
 }
