@@ -19,6 +19,8 @@ const byRating = (a, b) => {
   if (a.user_ratings_total < b.user_ratings_total) return -1
 }
 
+// <p>And one more thing: <b>{process.env.GOOGLE_MAPS}</b>.</p>
+
 export default ({ step = 0.1 }) => {
   const [dentists, setDentists] = useState()
   const [selectedDentists, setSelectedDentists] = useState([])

@@ -1,7 +1,7 @@
 "use strict"
 
 // core
-const path = require("path")
+const { join } = require("path")
 
 // npm
 const Dotenv = require("dotenv-webpack")
@@ -15,11 +15,17 @@ const withMDX = require("@next/mdx")({
   },
 })
 
+const path = join(__dirname, ".env")
+
 module.exports = withMDX({
   pageExtensions: ["js", "jsx", "mdx"],
   webpack: (config) => {
-    config.plugins = config.plugins || []
-    config.plugins.push(new Dotenv({ path: path.join(__dirname, ".env") }))
+    const dots = new Dotenv({ path })
+    if (config.plugins) {
+      config.plugins.push(dots)
+    } else {
+      config.plugins = [dots]
+    }
     return config
   },
 })
