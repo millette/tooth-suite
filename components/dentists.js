@@ -131,12 +131,13 @@ export default ({ step = 0.1 }) => {
             <input name="near" placeholder="H2K 4B2" type="text" />
           </label>
           {zip && coords && coords.results && coords.results[0] && (
-            <p>
-              Near <b>{coords.results[0].formatted_address}</b>.<br />
-              {coords.results[0].place_id}
-              <br />
-              {JSON.stringify(coords.results[0].geometry.location)}
-            </p>
+            <>
+              <p>
+                Near <b>{coords.results[0].formatted_address}</b> (
+                {coords.results[0].place_id}).
+              </p>
+              <p>{JSON.stringify(coords.results[0].geometry.location)}</p>
+            </>
           )}
         </form>
       </div>
