@@ -1,5 +1,6 @@
 node_modules
 .next
+.env
 tooth-suite.code-workspace
 .nyc_output
 static/dentists.json
