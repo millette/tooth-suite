@@ -32,6 +32,11 @@ class MyDocument extends Document {
           <footer>
             <p>Fee, Fii, Foo</p>
           </footer>
+          <script
+            src={`https://maps.googleapis.com/maps/api/js?key=${
+              process.env.GOOGLE_MAPS
+            }&libraries=places`}
+          />
           <NextScript />
         </body>
       </Html>
