@@ -6,26 +6,12 @@ import pMapSeries from "p-map-series"
 // self
 import Dentist from "./dentist"
 
-// const cb666 = (err, a, b, c, d) => console.log('CB', err, a, b, c, d)
-// console.log('SERVICE', service)
-
-/*
-const num = () => Math.max(1000, Math.floor(Math.random() * 10000))
-
-const fix = (x) => ({
-  ...x,
-  phone: `514-555-${num()}`,
-})
-*/
-
-// const displayZip = (zip) => [zip.slice(0, 3), zip.slice(3)].join(' ')
-
 const language = "fr-CA"
 const radius = 4000
 const nDecimals = 4
 const decimalMultiplier = 10 ** nDecimals
 // const fields = ['formatted_phone_number', 'formatted_address', 'permanently_closed', 'website']
-const fields = ["formatted_phone_number", "permanently_closed", "website"]
+const fields = ["formatted_phone_number", "permanently_closed", "website"] // vicinity is good enough
 
 // FIXME: maybe replace with use state..?
 let service
@@ -50,7 +36,6 @@ const makeKey = (method, request) => {
       break
 
     case "getDetails":
-      // keyParts.push(radius)
       keyParts.push(request.placeId)
       break
 
