@@ -6,7 +6,7 @@ const style = {
 }
 
 export default ({
-  phone,
+  formatted_phone_number,
   types,
   name,
   vicinity,
@@ -16,7 +16,7 @@ export default ({
   <section style={style}>
     <div style={{ flex: 1 }}>
       <h3>{name}</h3>
-      <h4>{phone}</h4>
+      <h4>{formatted_phone_number}</h4>
     </div>
     <dl style={{ flex: 1 }}>
       <dt>Rating</dt>
