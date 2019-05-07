@@ -12,17 +12,22 @@ export default ({
   vicinity,
   rating,
   user_ratings_total,
+  onClick,
 }) => (
-  <section style={style}>
+  <section onClick={onClick} style={style}>
     <div style={{ flex: 1 }}>
       <h3>{name}</h3>
       <h4>{formatted_phone_number}</h4>
     </div>
     <dl style={{ flex: 1 }}>
-      <dt>Rating</dt>
-      <dd>
-        {rating} (of {user_ratings_total})
-      </dd>
+      {rating && (
+        <>
+          <dt>Rating</dt>
+          <dd>
+            {rating} (of {user_ratings_total})
+          </dd>
+        </>
+      )}
 
       <dt>Address</dt>
       <dd>{vicinity}</dd>
