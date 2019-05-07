@@ -1,12 +1,17 @@
 // npm
+// import { useState, useEffect, useRef } from "react"
 import { useState, useEffect } from "react"
+// import { Store, get, set } from "idb-keyval"
 import { get, set } from "idb-keyval"
-import pMap from "p-map"
+import { useInView } from "react-intersection-observer"
+// import pMap from "p-map"
 
 // self
 import Dentist from "./dentist"
 
-const concurrency = 2
+// const customStore = new Store('custom-db-name', 'custom-store-name')
+
+// const concurrency = 2
 const language = "fr-CA"
 const radius = 4000
 const nDecimals = 4
@@ -50,6 +55,7 @@ const jsonObject = (obj) => JSON.parse(JSON.stringify(obj))
 
 const cachedFetch = async (method, request) => {
   const key = makeKey(method, request)
+  // const val = await get(key, customStore)
   const val = await get(key)
   if (val) return val
 
@@ -67,6 +73,7 @@ const cachedFetch = async (method, request) => {
       // if (status !== "OK") throw new Error("Status not OK.")
       // if (!results || !Array.isArray(results)) throw new Error(`Status: ${status}.`)
       const out = jsonObject(results)
+      // set(key, out, customStore).then(() => resolve(out))
       set(key, out).then(() => resolve(out))
     }
     service[method](request, cb)
@@ -87,8 +94,8 @@ const byRating = (a, b) => {
 }
 
 const zipRE1 = /[^A-Z0-9]/g
-// const zipRE2 = /H[0-57-9]([A-Z][0-9]){2}/ // Montréal begins with H but never H6
-const zipRE2 = /([A-Z][0-9]){3}/ // Canada
+const zipRE2 = /H[0-57-9]([A-Z][0-9]){2}/ // Montréal begins with H but never H6
+// const zipRE2 = /([A-Z][0-9]){3}/ // Canada
 
 const normalizeZip = (zip) => {
   const x = zip.toUpperCase().replace(zipRE1, "")
@@ -117,6 +124,12 @@ export default ({ step = 0.1 }) => {
   const [dir, setDir] = useState(-step)
   const [errorMessage, setError] = useState()
   const [search, setSearch] = useState()
+  // const ref = useRef()
+
+  const [ref, inView] = useInView({
+    /* Optional options */
+    threshold: 0,
+  })
 
   const minRating = ({ rating }) => rating >= min
 
@@ -133,6 +146,7 @@ export default ({ step = 0.1 }) => {
   useEffect(() => {
     if (!zip) return
     const zipKey = ["zip", language, zip].join(":")
+    // get(zipKey, customStore)
     get(zipKey)
       .then(
         (val) =>
@@ -145,6 +159,7 @@ export default ({ step = 0.1 }) => {
             .then((res) => res.json())
             .then((coords) => {
               if (coords && coords.results && coords.results[0])
+                // return set(["zip", language, zip].join(":"), coords, customStore).then(
                 return set(["zip", language, zip].join(":"), coords).then(
                   () => coords
                 )
@@ -161,6 +176,8 @@ export default ({ step = 0.1 }) => {
   useEffect(() => {
     if (!search) return
     setDentists(search)
+
+    /*
     pMap(search, (p) => cachedGetDetails(p.place_id), { concurrency }).then(
       (x) => {
         const y = x.map((a, i) => {
@@ -173,6 +190,7 @@ export default ({ step = 0.1 }) => {
         setDentists(y)
       }
     )
+    */
   }, [search])
 
   useEffect(() => {
@@ -191,6 +209,7 @@ export default ({ step = 0.1 }) => {
 
   const submit = (ev) => {
     ev.preventDefault()
+    // const zip = normalizeZip(new FormData(ev.target).get("near", customStore))
     const zip = normalizeZip(new FormData(ev.target).get("near"))
     setError("Updating...")
     setZip(zip)
@@ -212,6 +231,9 @@ export default ({ step = 0.1 }) => {
           )
         </small>
       </h2>
+
+      <p>{`Paragraph inside viewport ${inView}.`}</p>
+
       <div>
         <form onSubmit={submit}>
           <label>
@@ -235,6 +257,10 @@ export default ({ step = 0.1 }) => {
           <p>Enter a postal code to search near.</p>
         </>
       )}
+
+      <div ref={ref}>
+        <p>{`Paragraph inside viewport ${inView}.`}</p>
+      </div>
     </>
   )
 }
