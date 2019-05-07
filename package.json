@@ -26,6 +26,7 @@
     "p-map": "^2.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-intersection-observer": "^8.23.0",
     "remark-autolink-headings": "^5.2.0",
     "remark-sectionize": "^1.0.1",
     "remark-slug": "^5.1.1"
@@ -54,6 +55,7 @@
     "husky": "^2.2.0",
     "lint-staged": "^8.1.6",
     "nyc": "^14.1.0",
-    "prettier": "^1.17.0"
+    "prettier": "^1.17.0",
+    "webpack-bundle-analyzer": "^3.3.2"
   }
 }
