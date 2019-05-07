@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 // import { Store, get, set } from "idb-keyval"
 import { get, set } from "idb-keyval"
-import { useInView } from "react-intersection-observer"
 // import pMap from "p-map"
 
 // self
@@ -126,11 +125,6 @@ export default ({ step = 0.1 }) => {
   const [search, setSearch] = useState()
   // const ref = useRef()
 
-  const [ref, inView] = useInView({
-    /* Optional options */
-    threshold: 0,
-  })
-
   const minRating = ({ rating }) => rating >= min
 
   useEffect(() => {
@@ -232,8 +226,6 @@ export default ({ step = 0.1 }) => {
         </small>
       </h2>
 
-      <p>{`Paragraph inside viewport ${inView}.`}</p>
-
       <div>
         <form onSubmit={submit}>
           <label>
@@ -257,10 +249,6 @@ export default ({ step = 0.1 }) => {
           <p>Enter a postal code to search near.</p>
         </>
       )}
-
-      <div ref={ref}>
-        <p>{`Paragraph inside viewport ${inView}.`}</p>
-      </div>
     </>
   )
 }
