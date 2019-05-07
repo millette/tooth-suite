@@ -1,11 +1,12 @@
 // npm
 import { useState, useEffect } from "react"
 import { get, set } from "idb-keyval"
-import pMapSeries from "p-map-series"
+import pMap from "p-map"
 
 // self
 import Dentist from "./dentist"
 
+const concurrency = 2
 const language = "fr-CA"
 const radius = 4000
 const nDecimals = 4
@@ -61,7 +62,10 @@ const cachedFetch = async (method, request) => {
 
   return new Promise((resolve) => {
     const cb = (results, status) => {
-      if (status !== "OK") throw new Error("Status not OK.")
+      if (status !== "OK" && status !== "NO_RESULTS")
+        throw new Error("Status not OK.")
+      // if (status !== "OK") throw new Error("Status not OK.")
+      // if (!results || !Array.isArray(results)) throw new Error(`Status: ${status}.`)
       const out = jsonObject(results)
       set(key, out).then(() => resolve(out))
     }
@@ -157,16 +161,18 @@ export default ({ step = 0.1 }) => {
   useEffect(() => {
     if (!search) return
     setDentists(search)
-    pMapSeries(search, (p) => cachedGetDetails(p.place_id)).then((x) => {
-      const y = x.map((a, i) => {
-        return {
-          ...search[i],
-          ...a,
-        }
-      })
-      setError()
-      setDentists(y)
-    })
+    pMap(search, (p) => cachedGetDetails(p.place_id), { concurrency }).then(
+      (x) => {
+        const y = x.map((a, i) => {
+          return {
+            ...search[i],
+            ...a,
+          }
+        })
+        setError()
+        setDentists(y)
+      }
+    )
   }, [search])
 
   useEffect(() => {
