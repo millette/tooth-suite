@@ -1,16 +1,10 @@
 // npm
-// import { useState, useEffect, useRef } from "react"
 import { useState, useEffect } from "react"
-// import { Store, get, set } from "idb-keyval"
 import { get, set } from "idb-keyval"
-// import pMap from "p-map"
 
 // self
 import Dentist from "./dentist"
 
-// const customStore = new Store('custom-db-name', 'custom-store-name')
-
-// const concurrency = 2
 const language = "fr-CA"
 const radius = 4000
 const nDecimals = 4
@@ -54,7 +48,6 @@ const jsonObject = (obj) => JSON.parse(JSON.stringify(obj))
 
 const cachedFetch = async (method, request) => {
   const key = makeKey(method, request)
-  // const val = await get(key, customStore)
   const val = await get(key)
   if (val) return val
 
@@ -72,7 +65,6 @@ const cachedFetch = async (method, request) => {
       // if (status !== "OK") throw new Error("Status not OK.")
       // if (!results || !Array.isArray(results)) throw new Error(`Status: ${status}.`)
       const out = jsonObject(results)
-      // set(key, out, customStore).then(() => resolve(out))
       set(key, out).then(() => resolve(out))
     }
     service[method](request, cb)
@@ -86,6 +78,7 @@ const cachedNearbySearch = (location) =>
   cachedFetch("nearbySearch", { type: "dentist", radius, location })
 
 const byRating = (a, b) => {
+  if (!b.rating) return 1
   if (a.rating > b.rating) return 1
   if (a.rating < b.rating) return -1
   if (a.user_ratings_total > b.user_ratings_total) return 1
@@ -93,42 +86,28 @@ const byRating = (a, b) => {
 }
 
 const zipRE1 = /[^A-Z0-9]/g
-const zipRE2 = /H[0-57-9]([A-Z][0-9]){2}/ // Montréal begins with H but never H6
-// const zipRE2 = /([A-Z][0-9]){3}/ // Canada
+// const zipRE2 = /H[0-57-9]([A-Z][0-9]){2}/ // Montréal begins with H but never H6
+const zipRE2 = /([A-Z][0-9]){3}/ // Canada
 
 const normalizeZip = (zip) => {
   const x = zip.toUpperCase().replace(zipRE1, "")
   return zipRE2.test(x) ? x : ""
 }
 
-const detailsPromise = (placeId) =>
-  new Promise((resolve) => {
-    const request = {
-      placeId,
-      fields,
-    }
-    const cb = (place, status) => {
-      if (status !== "OK") throw new Error("Details not OK.")
-      resolve(place)
-    }
-    service.getDetails(request, cb)
-  })
-
 export default ({ step = 0.1 }) => {
   const [dentists, setDentists] = useState()
   const [selectedDentists, setSelectedDentists] = useState([])
   const [zip, setZip] = useState()
   const [coords, setCoords] = useState()
-  const [min, setMin] = useState(3.5)
-  const [dir, setDir] = useState(-step)
+  const [min, setMin] = useState(0)
   const [errorMessage, setError] = useState()
-  const [search, setSearch] = useState()
-  // const ref = useRef()
 
-  const minRating = ({ rating }) => rating >= min
+  const minRating = ({ rating }) => !min || rating >= min
 
   useEffect(() => {
+    console.log("effect-dentists", typeof dentists)
     if (!dentists) return
+    console.log("effect-dentists step 2")
     setSelectedDentists(
       dentists
         .filter(minRating)
@@ -138,9 +117,10 @@ export default ({ step = 0.1 }) => {
   }, [dentists, min])
 
   useEffect(() => {
+    console.log("effect-zip", typeof zip)
     if (!zip) return
+    console.log("effect-zip step 2")
     const zipKey = ["zip", language, zip].join(":")
-    // get(zipKey, customStore)
     get(zipKey)
       .then(
         (val) =>
@@ -153,7 +133,6 @@ export default ({ step = 0.1 }) => {
             .then((res) => res.json())
             .then((coords) => {
               if (coords && coords.results && coords.results[0])
-                // return set(["zip", language, zip].join(":"), coords, customStore).then(
                 return set(["zip", language, zip].join(":"), coords).then(
                   () => coords
                 )
@@ -168,54 +147,52 @@ export default ({ step = 0.1 }) => {
   }, [zip])
 
   useEffect(() => {
-    if (!search) return
-    setDentists(search)
-
-    /*
-    pMap(search, (p) => cachedGetDetails(p.place_id), { concurrency }).then(
-      (x) => {
-        const y = x.map((a, i) => {
-          return {
-            ...search[i],
-            ...a,
-          }
-        })
-        setError()
-        setDentists(y)
-      }
-    )
-    */
-  }, [search])
-
-  useEffect(() => {
+    console.log("effect-coords", typeof coords)
     if (!coords) {
-      setDentists([])
+      // setDentists([])
       return
     }
-    cachedNearbySearch(coords.results[0].geometry.location).then(setSearch)
+    console.log("effect-coords step 2")
+    cachedNearbySearch(coords.results[0].geometry.location).then(setDentists)
   }, [coords])
 
-  const click = () => {
-    const n = min + 2 * dir
-    if (n < 2.5 || n > 5) setDir(-dir)
-    setMin(min + dir)
-  }
+  const change = (ev) => setMin(ev.target.value)
 
   const submit = (ev) => {
     ev.preventDefault()
-    // const zip = normalizeZip(new FormData(ev.target).get("near", customStore))
-    const zip = normalizeZip(new FormData(ev.target).get("near"))
+    const z = normalizeZip(new FormData(ev.target).get("near"))
+    if (!z) {
+      setError()
+      setDentists([])
+      return
+    }
+
     setError("Updating...")
-    setZip(zip)
+    setZip(z)
+  }
+
+  const clicky = (placeId) => () => {
+    const xi = dentists.findIndex(
+      ({ place_id, formatted_phone_number }) =>
+        !formatted_phone_number && placeId === place_id
+    )
+    if (xi === -1) return
+    const xx = dentists.slice()
+    const x = xx[xi]
+
+    cachedGetDetails(placeId).then((val) => {
+      const ret = {
+        ...x,
+        ...val,
+      }
+      xx[xi] = ret
+      setDentists(xx)
+    })
   }
 
   return (
     <>
-      <h2
-        title="Click to change minimal rating"
-        style={{ cursor: "pointer" }}
-        onClick={click}
-      >
+      <h2>
         List{" "}
         <small>
           ({Math.round(min * 10) / 10} min rating
@@ -225,6 +202,14 @@ export default ({ step = 0.1 }) => {
           )
         </small>
       </h2>
+      <input
+        onChange={change}
+        defaultValue={min}
+        type="range"
+        min="0"
+        max="5"
+        step="0.1"
+      />
 
       <div>
         <form onSubmit={submit}>
@@ -241,7 +226,11 @@ export default ({ step = 0.1 }) => {
       </div>
       {selectedDentists.length ? (
         selectedDentists.map((dentist) => (
-          <Dentist key={dentist.place_id} {...dentist} />
+          <Dentist
+            onClick={clicky(dentist.place_id)}
+            key={dentist.place_id}
+            {...dentist}
+          />
         ))
       ) : (
         <>
