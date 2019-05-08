@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 const style = {
   margin: "1.5rem 0",
   borderBottom: "thin dashed",
@@ -17,7 +19,11 @@ export default ({
 }) => (
   <section onClick={onClick} style={style}>
     <div style={{ flex: 1 }}>
-      <h3>{name}</h3>
+      <h3>
+        <Link href="yoyo">
+          <a>{name}</a>
+        </Link>
+      </h3>
       {formatted_phone_number && <h4>☎ {formatted_phone_number}</h4>}
       {website && (
         <h4>
