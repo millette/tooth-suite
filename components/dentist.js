@@ -18,7 +18,7 @@ export default ({
   <section onClick={onClick} style={style}>
     <div style={{ flex: 1 }}>
       <h3>{name}</h3>
-      <h4>{formatted_phone_number}</h4>
+      {formatted_phone_number && <h4>☎ {formatted_phone_number}</h4>}
       {website && (
         <h4>
           ⌂{" "}
