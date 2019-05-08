@@ -3,3 +3,7 @@ h2 .icon.icon-link::before, h3 .icon.icon-link::before {
   padding-right: 0.25rem;
   opacity: 0.5;
 }
+
+h1 > img {
+  float: right;
+}
