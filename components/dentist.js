@@ -12,12 +12,24 @@ export default ({
   vicinity,
   rating,
   user_ratings_total,
+  website,
   onClick,
 }) => (
   <section onClick={onClick} style={style}>
     <div style={{ flex: 1 }}>
       <h3>{name}</h3>
       <h4>{formatted_phone_number}</h4>
+      {website && (
+        <h4>
+          ⌂{" "}
+          <a target="_blank" rel="noopener noreferrer" href={website}>
+            {website
+              .replace(/^https{0,1}:\/\/www\./, "")
+              .replace(/^https{0,1}:\/\//, "")
+              .replace(/\/$/, "")}
+          </a>
+        </h4>
+      )}
     </div>
     <dl style={{ flex: 1 }}>
       {rating && (
