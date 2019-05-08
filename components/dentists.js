@@ -192,24 +192,19 @@ export default ({ step = 0.1 }) => {
 
   return (
     <>
-      <h2>
-        List{" "}
-        <small>
-          ({Math.round(min * 10) / 10} min rating
-          {selectedDentists &&
-            selectedDentists.length > 0 &&
-            `/${selectedDentists.length} shown of ${dentists.length} nearby`}
-          )
-        </small>
-      </h2>
-      <input
-        onChange={change}
-        defaultValue={min}
-        type="range"
-        min="0"
-        max="5"
-        step="0.1"
-      />
+      <h2>Dentists</h2>
+      <div style={{ display: "flex", flexFlow: "row wrap" }}>
+        <input
+          style={{ flex: 1 }}
+          onChange={change}
+          defaultValue={min}
+          type="range"
+          min="0"
+          max="5"
+          step="0.1"
+        />
+        <div style={{ flex: 1 }}>{Math.round(min * 10) / 10} min rating</div>
+      </div>
 
       <div>
         <form onSubmit={submit}>
@@ -225,13 +220,18 @@ export default ({ step = 0.1 }) => {
         </form>
       </div>
       {selectedDentists.length ? (
-        selectedDentists.map((dentist) => (
-          <Dentist
-            onClick={clicky(dentist.place_id)}
-            key={dentist.place_id}
-            {...dentist}
-          />
-        ))
+        <>
+          <div>
+            {selectedDentists.length} shown of {dentists.length} nearby
+          </div>
+          {selectedDentists.map((dentist) => (
+            <Dentist
+              onClick={clicky(dentist.place_id)}
+              key={dentist.place_id}
+              {...dentist}
+            />
+          ))}
+        </>
       ) : (
         <>
           <p>{errorMessage}</p>
