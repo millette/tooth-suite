@@ -105,9 +105,9 @@ export default ({ step = 0.1 }) => {
   const minRating = ({ rating }) => !min || rating >= min
 
   useEffect(() => {
-    console.log("effect-dentists", typeof dentists)
+    // console.log("effect-dentists", typeof dentists)
     if (!dentists) return
-    console.log("effect-dentists step 2")
+    // console.log("effect-dentists step 2")
     setSelectedDentists(
       dentists
         .filter(minRating)
@@ -117,9 +117,9 @@ export default ({ step = 0.1 }) => {
   }, [dentists, min])
 
   useEffect(() => {
-    console.log("effect-zip", typeof zip)
+    // console.log("effect-zip", typeof zip)
     if (!zip) return
-    console.log("effect-zip step 2")
+    // console.log("effect-zip step 2")
     const zipKey = ["zip", language, zip].join(":")
     get(zipKey)
       .then(
@@ -147,12 +147,12 @@ export default ({ step = 0.1 }) => {
   }, [zip])
 
   useEffect(() => {
-    console.log("effect-coords", typeof coords)
+    // console.log("effect-coords", typeof coords)
     if (!coords) {
       // setDentists([])
       return
     }
-    console.log("effect-coords step 2")
+    // console.log("effect-coords step 2")
     cachedNearbySearch(coords.results[0].geometry.location).then(setDentists)
   }, [coords])
 
@@ -226,7 +226,7 @@ export default ({ step = 0.1 }) => {
           </div>
           {selectedDentists.map((dentist) => (
             <Dentist
-              onClick={clicky(dentist.place_id)}
+              onClick666={clicky(dentist.place_id)}
               key={dentist.place_id}
               {...dentist}
             />
