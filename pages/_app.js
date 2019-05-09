@@ -1,6 +1,6 @@
 // npm
 import Link from "next/link"
-import React from "react"
+import App, { Container } from "next/app"
 import { MDXProvider } from "@mdx-js/react"
 
 // self
@@ -12,7 +12,7 @@ const components = {
   Dentists,
   a: ({ href, children }) =>
     href.indexOf("://") === -1 ? (
-      <Link href={href} prefetch>
+      <Link href={href} prefetch={false}>
         <a>{children}</a>
       </Link>
     ) : (
@@ -22,8 +22,23 @@ const components = {
     ),
 }
 
-export default ({ Component, pageProps }) => (
-  <MDXProvider components={components}>
-    <Component {...pageProps} />
-  </MDXProvider>
-)
+class MyApp extends App {
+  static async getInitialProps({ Component, ctx }) {
+    if (!Component.getInitialProps) return {}
+    const pageProps = await Component.getInitialProps(ctx)
+    return { pageProps }
+  }
+
+  render() {
+    const { Component, pageProps } = this.props
+    return (
+      <Container>
+        <MDXProvider components={components}>
+          <Component {...pageProps} />
+        </MDXProvider>
+      </Container>
+    )
+  }
+}
+
+export default MyApp
