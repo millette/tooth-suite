@@ -4,11 +4,11 @@ import React from "react"
 import { MDXProvider } from "@mdx-js/react"
 
 // self
-import Button from "../components/button.js"
 import Dentists from "../components/dentists.js"
+import Nav from "../components/nav.mdx"
 
 const components = {
-  Button,
+  Nav,
   Dentists,
   a: ({ href, children }) =>
     href.indexOf("://") === -1 ? (
