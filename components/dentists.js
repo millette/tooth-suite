@@ -94,7 +94,7 @@ const normalizeZip = (zip) => {
   return zipRE2.test(x) ? x : ""
 }
 
-export default ({ step = 0.1 }) => {
+export default () => {
   const [dentists, setDentists] = useState()
   const [selectedDentists, setSelectedDentists] = useState([])
   const [zip, setZip] = useState()
