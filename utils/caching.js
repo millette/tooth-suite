@@ -72,4 +72,4 @@ const cachedNearbySearch = (location) =>
 const cachedGetDetails = (placeId) =>
   cachedFetch("getDetails", { placeId, fields })
 
-export { cachedNearbySearch, cachedGetDetails, language }
+export { locationKey, cachedNearbySearch, cachedGetDetails, language }
