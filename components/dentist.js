@@ -1,4 +1,8 @@
+// npm
 import Link from "next/link"
+
+// self
+import { locationKey, cachedNearbySearch } from "../utils/caching.js"
 
 const style = {
   margin: "1.5rem 0",
@@ -25,11 +29,19 @@ export default ({
         {single ? (
           name
         ) : (
-          <Link href={{ pathname: "/place", query: { id } }}>
+          <Link prefetch href={{ pathname: "/place", query: { id } }}>
             <a>{name}</a>
           </Link>
         )}
       </h3>
+      {single && (
+        <Link
+          prefetch
+          href={{ pathname: "/near", query: { coords: locationKey(location) } }}
+        >
+          <a>More nearby</a>
+        </Link>
+      )}
       {single && <pre>{JSON.stringify(location, null, "  ")}</pre>}
       {formatted_phone_number && <h4>☎&nbsp;{formatted_phone_number}</h4>}
       {website && (
