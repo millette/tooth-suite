@@ -45,6 +45,7 @@ const makeKey = (method, request) => {
 
 const jsonObject = (obj) => JSON.parse(JSON.stringify(obj))
 
+// TODO: extract to utility
 const cachedFetch = async (method, request) => {
   const key = makeKey(method, request)
   const val = await get(key)
