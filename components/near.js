@@ -15,11 +15,44 @@ const byRating = (a, b) => {
   if (a.user_ratings_total < b.user_ratings_total) return -1
 }
 
-const Thing = (props) => {
+const Thing = ({ router: { query } }) => {
   const [min, setMin] = useState(0)
   const [where, setWhere] = useState()
   const [dentists, setDentists] = useState([])
   const [selectedDentists, setSelectedDentists] = useState([])
+
+  useEffect(() => {
+    let p
+
+    if (query.coords) {
+      // TODO: move parsing into utility
+      const [lat, lng] = query.coords.split(",").map(parseFloat)
+      const location = { lat, lng }
+      setWhere({ geometry: { location } })
+      p = cachedNearbySearch(location)
+    } else if (query.zip) {
+      const zipKey = ["zip", language, query.zip].join(":")
+      p = get(zipKey).then((val) => {
+        if (!val) throw new Error("Key not found in db.")
+        setWhere(val)
+        return cachedNearbySearch(val.geometry.location)
+      })
+    }
+
+    if (!p) return
+
+    p.then((gg) =>
+      Promise.all(
+        gg.map((obj) => {
+          const key = ["place", language, obj.place_id].join(":")
+          return get(key).then((z) => {
+            if (z) return z
+            return set(key, obj).then(() => obj)
+          })
+        })
+      )
+    ).then(setDentists)
+  }, [])
 
   useEffect(() => {
     if (!dentists) return
@@ -32,28 +65,6 @@ const Thing = (props) => {
         .reverse()
     )
   }, [dentists, min])
-
-  useEffect(() => {
-    const zipKey = ["zip", language, props.router.query.zip].join(":")
-    get(zipKey)
-      .then((val) => {
-        if (!val) throw new Error("Key not found in db.")
-        setWhere(val)
-        return cachedNearbySearch(val.geometry.location)
-      })
-      .then((gg) =>
-        Promise.all(
-          gg.map((obj) => {
-            const key = ["place", language, obj.place_id].join(":")
-            return get(key).then((z) => {
-              if (z) return z
-              return set(key, obj).then(() => obj)
-            })
-          })
-        )
-      )
-      .then(setDentists)
-  }, [])
 
   const change = (ev) => setMin(ev.target.value)
 
@@ -73,9 +84,9 @@ const Thing = (props) => {
       </div>
 
       <div>Thing</div>
-      {where && selectedDentists.length ? (
+      {where && selectedDentists.length > 0 ? (
         <>
-          <p>{where.formatted_address}</p>
+          {where.formatted_address && <p>{where.formatted_address}</p>}
           <pre>{JSON.stringify(where.geometry.location)}</pre>
           <div>
             {selectedDentists.length} shown of {dentists.length} nearby
