@@ -2,7 +2,7 @@
 import { get, set } from "idb-keyval"
 
 const language = "fr-CA"
-const radius = 4000
+const radius = 2500
 const nDecimals = 4
 const decimalMultiplier = 10 ** nDecimals
 const fields = ["formatted_phone_number", "permanently_closed", "website"]
