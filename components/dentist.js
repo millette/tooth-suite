@@ -17,6 +17,7 @@ export default ({
   user_ratings_total,
   website,
   place_id: id,
+  geometry: { location },
 }) => (
   <section style={style}>
     <div style={{ flex: 1 }}>
@@ -29,6 +30,7 @@ export default ({
           </Link>
         )}
       </h3>
+      {single && <pre>{JSON.stringify(location, null, "  ")}</pre>}
       {formatted_phone_number && <h4>☎&nbsp;{formatted_phone_number}</h4>}
       {website && (
         <h4>
