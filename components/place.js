@@ -5,8 +5,10 @@ import { get, set } from "idb-keyval"
 
 // self
 import Dentist from "./dentist.js"
+import { cachedGetDetails } from "../utils/caching.js"
 
 const language = "fr-CA"
+/*
 const radius = 4000
 const nDecimals = 4
 const decimalMultiplier = 10 ** nDecimals
@@ -73,6 +75,7 @@ const cachedFetch = async (method, request) => {
 
 const cachedGetDetails = (placeId) =>
   cachedFetch("getDetails", { placeId, fields })
+*/
 
 const Place = ({ router }) => {
   const [place, setPlace] = useState()
