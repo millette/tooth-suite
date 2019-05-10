@@ -3,6 +3,9 @@ import { withRouter } from "next/router"
 import { useState, useEffect } from "react"
 import { get, set } from "idb-keyval"
 
+// self
+import Dentist from "./dentist.js"
+
 const language = "fr-CA"
 const radius = 4000
 const nDecimals = 4
@@ -70,65 +73,34 @@ const cachedFetch = async (method, request) => {
 const cachedGetDetails = (placeId) =>
   cachedFetch("getDetails", { placeId, fields })
 
-/*
-const radius = 4000
-const nDecimals = 4
-const decimalMultiplier = 10 ** nDecimals
-
-const limitDecimals = (n) => {
-  const [i, d] = String(
-    Math.round(n * decimalMultiplier) / decimalMultiplier
-  ).split(".")
-  return `${i}.${String(d)
-    .slice(0, 4)
-    .padEnd(4, 0)}`
-}
-
-const locationKey = ({ lat, lng }) =>
-  `${limitDecimals(lat)},${limitDecimals(lng)}`
-*/
-
-// self
-import Dentist from "./dentist.js"
-
 const Place = ({ router }) => {
   const [place, setPlace] = useState()
 
   useEffect(() => {
     const key = ["place", language, router.query.id].join(":")
-    console.log("KEY", key, router.query)
     get(key)
       .then((place) => {
         if (!place) throw new Error("Place not in db.")
-        if (place.website || place.formatted_phone_number) return place
-        return cachedGetDetails(place.place_id)
-          .then((x) => {
-            const oy = {
-              ...place,
-              ...x,
-            }
-            console.log("OY", oy)
-            return oy
-          })
-          .then((y) => set(key, y).then(() => y))
+        return place
       })
       .then(setPlace)
-    // cachedFetch("nearbySearch", { type: "dentist", radius, location })
-    // const key = makeKey(method, request)
-    // const val = await get(key)
-    // const key = ["nearbySearch", language, locationKey(request.location), radius].join(':')
-    // console.log('place coucou')
   }, [])
 
-  /*
-  const xi = dentists.findIndex(
-    ({ place_id, formatted_phone_number }) =>
-      !formatted_phone_number && placeId === place_id
-  )
-  if (xi === -1) return
-  const xx = dentists.slice()
-  const x = xx[xi]
-  */
+  useEffect(() => {
+    if (!place || place.website || place.formatted_phone_number) return
+    const key = ["place", language, place.place_id].join(":")
+
+    cachedGetDetails(place.place_id)
+      .then((x) => {
+        const oy = {
+          ...place,
+          ...x,
+        }
+        return oy
+      })
+      .then((y) => set(key, y).then(() => y))
+      .then(setPlace)
+  }, [place])
 
   return (
     <div>
