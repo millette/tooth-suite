@@ -1,5 +1,6 @@
 // npm
-import { useState, useEffect } from "react"
+import { withRouter } from "next/router"
+import { useState } from "react"
 import { get, set } from "idb-keyval"
 
 const language = "fr-CA"
@@ -13,6 +14,7 @@ const normalizeZip = (zip) => {
   return zipRE2.test(x) ? x : ""
 }
 
+/*
 const oy = {
   results: [
     {
@@ -63,10 +65,45 @@ const oy = {
   ],
   status: "OK",
 }
+*/
 
-export default () => {
+const NearPrompt = (props) => {
+  const { router } = props
+  /*
+  useEffect(() => {
+    const dbName = 'keyval-store'
+    const storeName = 'keyval'
+
+    const store = new Store(dbName, storeName)
+    console.log('STORE', store)
+    store._dbp.then((x) => {
+      console.log('STORE', x)
+      const openreq = indexedDB.open(dbName, 1)
+      console.log('openreq', openreq)
+
+      openreq.onerror = (e) => {
+        console.error('e1', e)
+        console.error('e2', openreq.error)
+      }
+
+      openreq.onsuccess = (ok) => {
+        console.log('ok1', ok)
+        console.log('ok2', openreq.result)
+        openreq.result.createObjectStore(storeName)
+      }
+
+      openreq.onupgradeneeded = (x) => {
+        console.log('x1:', x)
+        console.log('x2:', openreq.result)
+      }
+    })
+    .catch((e) => console.error('STORE', e))
+  }, [])
+  */
+
+  /*
   const [zip, setZip] = useState()
-  const [coords, setCoords] = useState()
+  // const [coords, setCoords] = useState()
   const [errorMessage, setError] = useState()
 
   useEffect(() => {
@@ -98,12 +135,55 @@ export default () => {
         setError(e.toString())
       })
   }, [zip])
+  */
+
+  const [message, setMessage] = useState("Waiting for user input...")
+  // const [zip, setZip] = useState()
+
+  const zzz = (zip) => {
+    const zipKey = ["zip", language, zip].join(":")
+    console.log("zipKey", zipKey)
+    return get(zipKey)
+      .then((val) => {
+        console.log("VAL", typeof val, val)
+        if (val) return val
+        return fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?language=${language}&region=ca&components=postal_code:${zip}&key=${
+            process.env.GOOGLE_MAPS
+          }`
+        )
+          .then((res) => res.json())
+          .then(({ status, results: [result] }) => {
+            if (status !== "OK") throw new Error(status)
+            return Promise.all([result, set(zipKey, result)])
+          })
+          .then(([result]) => result)
+      })
+      .catch((e) => {
+        console.log("OUILLE", e)
+        throw e
+      })
+  }
 
   const submit = (ev) => {
     ev.preventDefault()
-    const z = normalizeZip(new FormData(ev.target).get("near"))
-    if (!z) return setError()
-    setZip(z)
+    const zip = normalizeZip(new FormData(ev.target).get("near"))
+    console.log("ZIP", zip)
+    if (!zip) return setMessage("Postal code is incomplete or invalid.")
+    zzz(zip)
+      .then((a) => {
+        console.log("submit:", zip, a)
+        // Router.push({ pathname: '/near', query: { zip } }, `/near/${zip}`)
+        // Router.push({ pathname: '/near', query: { zip } })
+        // router.push({ pathname: '/near', query: { zip } }, `/near/${zip}`)
+        router.push({ pathname: "/near", query: { zip } })
+      })
+      .catch((e) => {
+        console.error(e)
+        setMessage(e.message)
+      })
+    // setMessage()
+    // setZip(z)
   }
 
   return (
@@ -118,10 +198,9 @@ export default () => {
         </form>
       </div>
 
-      <div>
-        <p>{errorMessage}</p>
-        <pre>{JSON.stringify(coords)}</pre>
-      </div>
+      <div>{message && <p>{message}</p>}</div>
     </div>
   )
 }
+
+export default withRouter(NearPrompt)
