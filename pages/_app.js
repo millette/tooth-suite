@@ -4,12 +4,14 @@ import App, { Container } from "next/app"
 import { MDXProvider } from "@mdx-js/react"
 
 // self
-import Dentists from "../components/dentists.js"
-import Nav from "../components/nav.mdx"
+// import Dentists from "../components/dentists.js"
+import Title from "../components/title.mdx"
+import Near from "../components/near.js"
 
 const components = {
-  Nav,
-  Dentists,
+  Title,
+  Near,
+  // Dentists,
   a: ({ href, children }) =>
     href.indexOf("://") === -1 ? (
       <Link href={href} prefetch={false}>
