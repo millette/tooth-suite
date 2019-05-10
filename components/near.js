@@ -20,6 +20,7 @@ const Thing = ({ router: { query } }) => {
   const [where, setWhere] = useState()
   const [dentists, setDentists] = useState([])
   const [selectedDentists, setSelectedDentists] = useState([])
+  const [message, setMessage] = useState("Loading...")
 
   useEffect(() => {
     let p
@@ -33,7 +34,7 @@ const Thing = ({ router: { query } }) => {
     } else if (query.zip) {
       const zipKey = ["zip", language, query.zip].join(":")
       p = get(zipKey).then((val) => {
-        if (!val) throw new Error("Key not found in db.")
+        if (!val) throw new Error("Nothing here.")
         setWhere(val)
         return cachedNearbySearch(val.geometry.location)
       })
@@ -51,7 +52,9 @@ const Thing = ({ router: { query } }) => {
           })
         })
       )
-    ).then(setDentists)
+    )
+      .then(setDentists)
+      .catch((e) => setMessage(e.message))
   }, [])
 
   useEffect(() => {
@@ -96,7 +99,7 @@ const Thing = ({ router: { query } }) => {
           ))}
         </>
       ) : (
-        <div>Loading...</div>
+        <div>{message}</div>
       )}
     </div>
   )

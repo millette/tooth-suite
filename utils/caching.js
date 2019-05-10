@@ -53,10 +53,11 @@ const cachedFetch = async (method, request) => {
     service = new google.maps.places.PlacesService(el)
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const cb = (results, status) => {
+      // if (status !== "OK" && status !== "NO_RESULTS") return reject(new Error("Status not OK."))
       if (status !== "OK" && status !== "NO_RESULTS")
-        throw new Error("Status not OK.")
+        return reject(new Error(status))
       // if (status !== "OK") throw new Error("Status not OK.")
       // if (!results || !Array.isArray(results)) throw new Error(`Status: ${status}.`)
       const out = jsonObject(results)
