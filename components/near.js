@@ -44,6 +44,7 @@ const makeKey = (method, request) => {
 
 const jsonObject = (obj) => JSON.parse(JSON.stringify(obj))
 
+// TODO: extract to utility
 const cachedFetch = async (method, request) => {
   const key = makeKey(method, request)
   const val = await get(key)
@@ -69,97 +70,8 @@ const cachedFetch = async (method, request) => {
   })
 }
 
-// const cachedGetDetails = (placeId) => cachedFetch("getDetails", { placeId, fields })
-
 const cachedNearbySearch = (location) =>
   cachedFetch("nearbySearch", { type: "dentist", radius, location })
-
-/*
-const lolo = {
-  "address_components": [
-    {
-      "long_name": "H2K 4B6",
-      "short_name": "H2K 4B6",
-      "types": [
-        "postal_code"
-      ]
-    },
-    {
-      "long_name": "Le Plateau-Mont-Royal",
-      "short_name": "Le Plateau-Mont-Royal",
-      "types": [
-        "political",
-        "sublocality",
-        "sublocality_level_1"
-      ]
-    },
-    {
-      "long_name": "Montréal",
-      "short_name": "Montréal",
-      "types": [
-        "locality",
-        "political"
-      ]
-    },
-    {
-      "long_name": "Communauté-Urbaine-de-Montréal",
-      "short_name": "Communauté-Urbaine-de-Montréal",
-      "types": [
-        "administrative_area_level_2",
-        "political"
-      ]
-    },
-    {
-      "long_name": "Québec",
-      "short_name": "QC",
-      "types": [
-        "administrative_area_level_1",
-        "political"
-      ]
-    },
-    {
-      "long_name": "Canada",
-      "short_name": "CA",
-      "types": [
-        "country",
-        "political"
-      ]
-    }
-  ],
-  "formatted_address": "Montréal, QC H2K 4B6, Canada",
-  "geometry": {
-    "bounds": {
-      "northeast": {
-        "lat": 45.5306083,
-        "lng": -73.5635049
-      },
-      "southwest": {
-        "lat": 45.5292948,
-        "lng": -73.5661816
-      }
-    },
-    "location": {
-      "lat": 45.52998059999999,
-      "lng": -73.5651074
-    },
-    "location_type": "APPROXIMATE",
-    "viewport": {
-      "northeast": {
-        "lat": 45.5313005302915,
-        "lng": -73.56349426970849
-      },
-      "southwest": {
-        "lat": 45.5286025697085,
-        "lng": -73.56619223029149
-      }
-    }
-  },
-  "place_id": "ChIJ_5bTy8AbyUwRcnyFDErLogo",
-  "types": [
-    "postal_code"
-  ]
-}
-*/
 
 const byRating = (a, b) => {
   if (!b.rating) return 1
@@ -175,14 +87,10 @@ const Thing = (props) => {
   const [dentists, setDentists] = useState([])
   const [selectedDentists, setSelectedDentists] = useState([])
 
-  // const minRating = ({ rating }) => !min || (rating >= min)
-
   useEffect(() => {
-    // console.log("effect-dentists", typeof dentists)
     if (!dentists) return
     const minRating = min > 0 ? ({ rating }) => rating >= min : () => true
 
-    // console.log("effect-dentists step 2")
     setSelectedDentists(
       dentists
         .filter(minRating)
@@ -193,7 +101,6 @@ const Thing = (props) => {
 
   useEffect(() => {
     const zipKey = ["zip", language, props.router.query.zip].join(":")
-    console.log("zipKey", zipKey)
     get(zipKey)
       .then((val) => {
         if (!val) throw new Error("Key not found in db.")
@@ -208,26 +115,11 @@ const Thing = (props) => {
               if (z) return z
               return set(key, obj).then(() => obj)
             })
-            // return set(key, obj)
           })
-          // ).then(() => gg)
         )
       )
       .then(setDentists)
-    // .then(setWhere)
-
-    // setWhere(props.router.query.zip)
   }, [])
-
-  // console.log('comp-props-router.query', props.router.query)
-  // console.log('page-props-k', Object.keys(Router))
-  /*
-  if (typeof window !== 'undefined') {
-    console.log('comp-props.asPath', Router.asPath)
-    console.log('comp-props.query', Router.query)
-    console.log('comp-props.pathname', Router.pathname)
-  }
-  */
 
   const change = (ev) => setMin(ev.target.value)
 
