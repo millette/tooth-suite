@@ -8,6 +8,7 @@ const style = {
 }
 
 export default ({
+  single,
   formatted_phone_number,
   types,
   name,
@@ -15,19 +16,23 @@ export default ({
   rating,
   user_ratings_total,
   website,
-  onClick,
+  place_id: id,
 }) => (
-  <section onClick={onClick} style={style}>
+  <section style={style}>
     <div style={{ flex: 1 }}>
       <h3>
-        <Link href="yoyo">
-          <a>{name}</a>
-        </Link>
+        {single ? (
+          name
+        ) : (
+          <Link href={{ pathname: "/place", query: { id } }}>
+            <a>{name}</a>
+          </Link>
+        )}
       </h3>
-      {formatted_phone_number && <h4>☎ {formatted_phone_number}</h4>}
+      {formatted_phone_number && <h4>☎&nbsp;{formatted_phone_number}</h4>}
       {website && (
         <h4>
-          ⌂{" "}
+          ⌂&nbsp;
           <a target="_blank" rel="noopener noreferrer" href={website}>
             {website
               .replace(/^https{0,1}:\/\/www\./, "")
