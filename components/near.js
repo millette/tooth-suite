@@ -5,9 +5,7 @@ import { get, set } from "idb-keyval"
 
 // self
 import Dentist from "./dentist.js"
-import { cachedNearbySearch } from "../utils/caching.js"
-
-const language = "fr-CA"
+import { cachedNearbySearch, language } from "../utils/caching.js"
 
 const byRating = (a, b) => {
   if (!b.rating) return 1
