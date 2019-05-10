@@ -42,7 +42,6 @@ export default ({
           <a>More nearby</a>
         </Link>
       )}
-      {single && <pre>{JSON.stringify(location, null, "  ")}</pre>}
       {formatted_phone_number && <h4>☎&nbsp;{formatted_phone_number}</h4>}
       {website && (
         <h4>
