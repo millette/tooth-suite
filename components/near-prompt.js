@@ -5,8 +5,8 @@ import { get, set } from "idb-keyval"
 import { language } from "../utils/caching.js"
 
 const zipRE1 = /[^A-Z0-9]/g
-// const zipRE2 = /H[0-57-9]([A-Z][0-9]){2}/ // Montréal begins with H but never H6
-const zipRE2 = /([A-Z][0-9]){3}/ // Canada
+// const zipRE2 = /^H[0-57-9]([A-Z][0-9]){2}$/ // Montréal begins with H but never H6
+const zipRE2 = /^([A-Z][0-9]){3}$/ // Canada
 
 const normalizeZip = (zip) => {
   const x = zip.toUpperCase().replace(zipRE1, "")
