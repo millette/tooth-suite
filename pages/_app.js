@@ -6,10 +6,14 @@ import { MDXProvider } from "@mdx-js/react"
 // self
 import Title from "../components/title.mdx"
 import Near from "../components/near.js"
+import NearPrompt from "../components/near-prompt.js"
+import Place from "../components/place.js"
 
 const components = {
   Title,
   Near,
+  NearPrompt,
+  Place,
   a: ({ href, children }) =>
     href.indexOf("://") === -1 ? (
       <Link href={href} prefetch>
