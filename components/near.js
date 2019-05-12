@@ -86,7 +86,6 @@ const Thing = ({ router: { query } }) => {
         <div style={{ flex: 1 }}>{Math.round(min * 10) / 10} min rating</div>
       </div>
 
-      <div>Thing</div>
       {where && selectedDentists.length > 0 ? (
         <>
           {where.formatted_address && <p>{where.formatted_address}</p>}

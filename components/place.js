@@ -36,11 +36,13 @@ const Place = ({ router }) => {
       .then(setPlace)
   }, [place])
 
+  if (!place) return <div>Loading...</div>
+
   return (
-    <div>
-      A place
-      {place && <Dentist {...place} single={true} />}
-    </div>
+    <>
+      <h2>{place.name}</h2>
+      <Dentist {...place} single={true} />
+    </>
   )
 }
 
