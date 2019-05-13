@@ -44,7 +44,10 @@ const NearPrompt = (props) => {
     const zip = normalizeZip(new FormData(ev.target).get("near"))
     if (!zip) return setMessage("Postal code is incomplete or invalid.")
     zzz(zip)
-      .then(() => router.push({ pathname: "/near", query: { zip } }))
+      .then(() => {
+        setMessage("Loading...")
+        router.push({ pathname: "/near", query: { zip } })
+      })
       .catch((e) => {
         setMessage(e.message)
       })
