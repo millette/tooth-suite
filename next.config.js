@@ -40,7 +40,7 @@ module.exports = withBundleAnalyzer(
       },
     },
     webpack: (config) => {
-      const dots = new Dotenv({ path })
+      const dots = new Dotenv({ path, safe: true, defaults: true })
       if (config.plugins) {
         config.plugins.push(dots)
       } else {
