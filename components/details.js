@@ -1,9 +1,81 @@
-export default ({ place_id, name }) => (
-  <div>
-    <h2>Details about {name}</h2>
-    <h3>({place_id})</h3>
-  </div>
-)
+// npm
+import { useState, useEffect } from "react"
+import { get, set } from "idb-keyval"
+
+// const Details = ({ router, place_id, name }) => {
+export default ({ place_id, name }) => {
+  const [details, setDetails] = useState()
+
+  useEffect(() => {
+    fetch(
+      [
+        process.env.JSONSTORE_SERVICE,
+        process.env.JSONSTORE,
+        "details",
+        place_id,
+      ].join("/")
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        console.log("JSON:", json)
+        setDetails(json)
+      })
+  }, [])
+
+  const submit = (ev) => {
+    ev.preventDefault()
+    console.log("submit", ev.target.action, ev.target.method)
+
+    const fd = new FormData(ev.target)
+    const z = fd.get("q1")
+    console.log("z", z)
+    const details = {}
+    details[place_id] = {
+      q1: z,
+    }
+
+    fetch([process.env.JSONSTORE_SERVICE, process.env.JSONSTORE].join("/"), {
+      headers: {
+        "content-type": "application/json",
+      },
+      method: "POST",
+      // body: JSON.stringify({ details }),
+      body: JSON.stringify({ details }),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log("JSON:", json)
+      })
+  }
+
+  return (
+    <div>
+      <h2>Details about {name}</h2>
+      <h3>({place_id})</h3>
+      <form
+        onSubmit={submit}
+        method="post"
+        action={[
+          process.env.JSONSTORE_SERVICE,
+          process.env.JSONSTORE,
+          "details",
+          place_id,
+        ].join("/")}
+      >
+        <label>
+          Q1...
+          <textarea name="q1" />
+        </label>
+        <button>Submit</button>
+      </form>
+      <p>{process.env.JSONSTORE_SERVICE}</p>
+      <p>{process.env.JSONSTORE}</p>
+      {details && <pre>DETAILS: {JSON.stringify(details, null, "  ")}</pre>}
+    </div>
+  )
+}
+
+// export default withRouter(Details)
 
 /*
 

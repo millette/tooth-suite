@@ -51,7 +51,7 @@
     "coveralls": "^3.0.3",
     "dotenv-webpack": "^1.7.0",
     "healthier": "^2.0.0",
-    "husky": "^2.2.0",
+    "husky": "^2.3.0",
     "lint-staged": "^8.1.6",
     "nyc": "^14.1.1",
     "prettier": "^1.17.1",
