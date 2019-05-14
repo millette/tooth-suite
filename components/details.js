@@ -5,6 +5,7 @@ import { get, set } from "idb-keyval"
 // const Details = ({ router, place_id, name }) => {
 export default ({ place_id, name }) => {
   const [details, setDetails] = useState()
+  const [message, setMessage] = useState()
 
   useEffect(() => {
     fetch(
@@ -17,34 +18,52 @@ export default ({ place_id, name }) => {
     )
       .then((res) => res.json())
       .then((json) => {
-        console.log("JSON:", json)
-        setDetails(json)
+        const { result, ok } = json
+        console.log("JSON: GET, ", json)
+        if (ok) return setDetails(result || {})
+        setMessage(`error: ${JSON.stringify(json)}`)
       })
   }, [])
 
   const submit = (ev) => {
     ev.preventDefault()
-    console.log("submit", ev.target.action, ev.target.method)
+    console.log("submit", ev.target.method, ev.target.action)
+    const method = "PUT"
+    const action = [
+      process.env.JSONSTORE_SERVICE,
+      process.env.JSONSTORE,
+      "details",
+      place_id,
+    ].join("/")
+    const headers = { "content-type": "application/json" }
+
+    console.log("ACTIONS", action)
+    console.log("METHOD", method)
 
     const fd = new FormData(ev.target)
-    const z = fd.get("q1")
-    console.log("z", z)
-    const details = {}
-    details[place_id] = {
-      q1: z,
-    }
+    const q1 = fd.get("q1")
+    console.log("q1", q1)
+    const q2 = fd.get("q2")
+    console.log("q2", q2)
+    // const details = {}
+    // details[place_id] = { q1, q2 }
+    const deets = { q1, q2 }
 
-    fetch([process.env.JSONSTORE_SERVICE, process.env.JSONSTORE].join("/"), {
-      headers: {
-        "content-type": "application/json",
-      },
-      method: "POST",
-      // body: JSON.stringify({ details }),
-      body: JSON.stringify({ details }),
+    // const body = JSON.stringify({ details })
+    const body = JSON.stringify(deets)
+
+    fetch(action, {
+      headers,
+      method,
+      body,
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log("JSON:", json)
+        console.log("JSON:", method, json)
+        const { ok } = json
+        // if (ok) return setDetails(details[place_id])
+        if (ok) return setDetails(deets)
+        setMessage(`error: ${JSON.stringify(json)}`)
       })
   }
 
@@ -52,25 +71,21 @@ export default ({ place_id, name }) => {
     <div>
       <h2>Details about {name}</h2>
       <h3>({place_id})</h3>
-      <form
-        onSubmit={submit}
-        method="post"
-        action={[
-          process.env.JSONSTORE_SERVICE,
-          process.env.JSONSTORE,
-          "details",
-          place_id,
-        ].join("/")}
-      >
-        <label>
-          Q1...
-          <textarea name="q1" />
-        </label>
-        <button>Submit</button>
-      </form>
-      <p>{process.env.JSONSTORE_SERVICE}</p>
-      <p>{process.env.JSONSTORE}</p>
+      {details && (
+        <form onSubmit={submit}>
+          <label>
+            Q1...
+            <textarea name="q1" defaultValue={details.q1} />
+          </label>
+          <label>
+            Q2...
+            <textarea name="q2" defaultValue={details.q2} />
+          </label>
+          <button>Submit</button>
+        </form>
+      )}
       {details && <pre>DETAILS: {JSON.stringify(details, null, "  ")}</pre>}
+      {message && <p>{message}</p>}
     </div>
   )
 }
