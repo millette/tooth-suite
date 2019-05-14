@@ -5,6 +5,7 @@ import { get, set } from "idb-keyval"
 
 // self
 import Dentist from "./dentist.js"
+import Details from "./details.js"
 import { cachedGetDetails, language } from "../utils/caching.js"
 
 const Place = ({ router }) => {
@@ -42,6 +43,7 @@ const Place = ({ router }) => {
     <>
       <h2>{place.name}</h2>
       <Dentist {...place} single={true} />
+      <Details {...place} />
     </>
   )
 }
