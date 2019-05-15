@@ -8,12 +8,14 @@ import Title from "../components/title.mdx"
 import Near from "../components/near.js"
 import NearPrompt from "../components/near-prompt.js"
 import Place from "../components/place.js"
+import Questions from "../components/questions.js"
 
 const components = {
   Title,
   Near,
   NearPrompt,
   Place,
+  Questions,
   a: ({ href, children }) =>
     href.indexOf("://") === -1 ? (
       <Link href={href} prefetch>
