@@ -69,8 +69,10 @@ export default ({ place_id, name }) => {
 
   return (
     <div>
-      <h2>Details about {name}</h2>
-      <h3>({place_id})</h3>
+      <h2>
+        Details <small>({place_id})</small>
+      </h2>
+
       {details && (
         <form onSubmit={submit}>
           <label>
