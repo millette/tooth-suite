@@ -24,22 +24,26 @@ export default ({
   place_id: id,
   geometry: { location },
 }) => (
-  <section style={style}>
+  <section
+    title={details ? "With answers" : ""}
+    style={style}
+    className={details ? "with-answers" : ""}
+  >
     <div style={{ flex: 1 }}>
-      <h3 title={details ? "With answers" : ""}>
+      <h3>
         <>
+          {details && (
+            <small>
+              <sup>*</sup>
+            </small>
+          )}
+          &nbsp;
           {single ? (
             name
           ) : (
             <Link prefetch href={{ pathname: "/place", query: { id } }}>
               <a>{name}</a>
             </Link>
-          )}
-          &nbsp;
-          {details && (
-            <small>
-              <sup>*</sup>
-            </small>
           )}
         </>
       </h3>
