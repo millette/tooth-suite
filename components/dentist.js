@@ -12,6 +12,7 @@ const style = {
 }
 
 export default ({
+  details,
   single,
   formatted_phone_number,
   types,
@@ -25,14 +26,22 @@ export default ({
 }) => (
   <section style={style}>
     <div style={{ flex: 1 }}>
-      <h3>
-        {single ? (
-          name
-        ) : (
-          <Link prefetch href={{ pathname: "/place", query: { id } }}>
-            <a>{name}</a>
-          </Link>
-        )}
+      <h3 title={details ? "With answers" : ""}>
+        <>
+          {single ? (
+            name
+          ) : (
+            <Link prefetch href={{ pathname: "/place", query: { id } }}>
+              <a>{name}</a>
+            </Link>
+          )}
+          &nbsp;
+          {details && (
+            <small>
+              <sup>*</sup>
+            </small>
+          )}
+        </>
       </h3>
       {single && (
         <Link
