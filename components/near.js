@@ -32,7 +32,6 @@ const Thing = ({ router: { query } }) => {
       .then((res) => res.json())
       .then((json) => {
         const { result, ok } = json
-        console.log("JSON: GET, ", json)
         if (ok) return setDetails(result ? Object.keys(result) : [])
         setMessage(`error: ${JSON.stringify(json)}`)
       })
@@ -60,27 +59,16 @@ const Thing = ({ router: { query } }) => {
     if (!p) return
 
     p.then((hh) => {
-      const gg = hh.map((x) => {
-        if (details.indexOf(x.place_id) !== -1) {
-          x.details = true
-        }
-        return x
-      })
-      console.log("GG", gg)
+      const gg = hh.map((x) =>
+        details.indexOf(x.place_id) === -1 ? x : { ...x, details: true }
+      )
       return Promise.all(
         gg.map((obj) => {
           const key = ["place", language, obj.place_id].join(":")
           return get(key).then((z) => {
-            // if (z) return z
-            // return set(key, obj).then(() => obj)
             if (!z) return set(key, obj).then(() => obj)
-
-            if (details.indexOf(z.place_id) !== -1) {
-              z.details = true
-            }
+            if (details.indexOf(z.place_id) !== -1) z.details = true
             return z
-            // if (z) return z
-            // return set(key, obj).then(() => obj)
           })
         })
       )
