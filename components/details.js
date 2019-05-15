@@ -1,19 +1,15 @@
 // npm
 import { useState, useEffect } from "react"
 
+// self
+import { jsonStoreUrl } from "../utils/json-store.js"
+
 export default ({ place_id }) => {
   const [details, setDetails] = useState()
   const [message, setMessage] = useState()
 
   useEffect(() => {
-    fetch(
-      [
-        process.env.JSONSTORE_SERVICE,
-        process.env.JSONSTORE,
-        "details",
-        place_id,
-      ].join("/")
-    )
+    fetch(jsonStoreUrl(["details", place_id]))
       .then((res) => res.json())
       .then((json) => {
         const { result, ok } = json
@@ -25,12 +21,7 @@ export default ({ place_id }) => {
   const submit = (ev) => {
     ev.preventDefault()
     const method = "PUT"
-    const action = [
-      process.env.JSONSTORE_SERVICE,
-      process.env.JSONSTORE,
-      "details",
-      place_id,
-    ].join("/")
+    const action = jsonStoreUrl(["details", place_id])
     const headers = { "content-type": "application/json" }
     const fd = new FormData(ev.target)
     const q1 = fd.get("q1")

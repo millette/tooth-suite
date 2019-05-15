@@ -6,6 +6,7 @@ import { get, set } from "idb-keyval"
 // self
 import Dentist from "./dentist.js"
 import { cachedNearbySearch, language } from "../utils/caching.js"
+import { jsonStoreUrl } from "../utils/json-store.js"
 
 const byRating = (a, b) => {
   if (!b.rating) return 1
@@ -24,11 +25,7 @@ const Thing = ({ router: { query } }) => {
   const [details, setDetails] = useState()
 
   useEffect(() => {
-    fetch(
-      [process.env.JSONSTORE_SERVICE, process.env.JSONSTORE, "details"].join(
-        "/"
-      )
-    )
+    fetch(jsonStoreUrl("details"))
       .then((res) => res.json())
       .then((json) => {
         const { result, ok } = json
