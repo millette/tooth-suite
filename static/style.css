@@ -7,3 +7,8 @@ h2 .icon.icon-link::before, h3 .icon.icon-link::before {
 h1 > img {
   float: right;
 }
+
+.with-answers {
+  background: #ffff80;
+  padding: 0 1rem;
+}
