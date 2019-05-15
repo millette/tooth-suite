@@ -21,8 +21,25 @@ const Thing = ({ router: { query } }) => {
   const [dentists, setDentists] = useState([])
   const [selectedDentists, setSelectedDentists] = useState([])
   const [message, setMessage] = useState("Loading...")
+  const [details, setDetails] = useState()
 
   useEffect(() => {
+    fetch(
+      [process.env.JSONSTORE_SERVICE, process.env.JSONSTORE, "details"].join(
+        "/"
+      )
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        const { result, ok } = json
+        console.log("JSON: GET, ", json)
+        if (ok) return setDetails(result ? Object.keys(result) : [])
+        setMessage(`error: ${JSON.stringify(json)}`)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!details) return
     let p
 
     if (query.coords) {
@@ -42,20 +59,35 @@ const Thing = ({ router: { query } }) => {
 
     if (!p) return
 
-    p.then((gg) =>
-      Promise.all(
+    p.then((hh) => {
+      const gg = hh.map((x) => {
+        if (details.indexOf(x.place_id) !== -1) {
+          x.details = true
+        }
+        return x
+      })
+      console.log("GG", gg)
+      return Promise.all(
         gg.map((obj) => {
           const key = ["place", language, obj.place_id].join(":")
           return get(key).then((z) => {
-            if (z) return z
-            return set(key, obj).then(() => obj)
+            // if (z) return z
+            // return set(key, obj).then(() => obj)
+            if (!z) return set(key, obj).then(() => obj)
+
+            if (details.indexOf(z.place_id) !== -1) {
+              z.details = true
+            }
+            return z
+            // if (z) return z
+            // return set(key, obj).then(() => obj)
           })
         })
       )
-    )
+    })
       .then(setDentists)
       .catch((e) => setMessage(e.message))
-  }, [])
+  }, [details])
 
   useEffect(() => {
     if (!dentists) return
@@ -73,6 +105,8 @@ const Thing = ({ router: { query } }) => {
 
   return (
     <div>
+      {details && <pre>{JSON.stringify(details, null, "  ")}</pre>}
+
       <div style={{ display: "flex", flexFlow: "row wrap" }}>
         <input
           style={{ flex: 1 }}
