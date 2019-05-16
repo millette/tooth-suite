@@ -4,6 +4,7 @@
 const { join } = require("path")
 
 // npm
+const withImages = require("next-images")
 const Dotenv = require("dotenv-webpack")
 const withMDX = require("@next/mdx")({
   options: {
@@ -25,28 +26,30 @@ const withBundleAnalyzer = require("./lib/bundan")({
 const path = join(__dirname, ".env")
 
 module.exports = withBundleAnalyzer(
-  withMDX({
-    pageExtensions: ["js", "jsx", "mdx"],
-    analyzeServer: ["server", "both"].includes(process.env.BUNDLE_ANALYZE),
-    analyzeBrowser: ["browser", "both"].includes(process.env.BUNDLE_ANALYZE),
-    bundleAnalyzerConfig: {
-      server: {
-        analyzerMode: "static",
-        reportFilename: "../bundles/server.html",
+  withImages(
+    withMDX({
+      pageExtensions: ["js", "jsx", "mdx"],
+      analyzeServer: ["server", "both"].includes(process.env.BUNDLE_ANALYZE),
+      analyzeBrowser: ["browser", "both"].includes(process.env.BUNDLE_ANALYZE),
+      bundleAnalyzerConfig: {
+        server: {
+          analyzerMode: "static",
+          reportFilename: "../bundles/server.html",
+        },
+        browser: {
+          analyzerMode: "static",
+          reportFilename: "../bundles/client.html",
+        },
       },
-      browser: {
-        analyzerMode: "static",
-        reportFilename: "../bundles/client.html",
+      webpack: (config) => {
+        const dots = new Dotenv({ path, safe: true, defaults: true })
+        if (config.plugins) {
+          config.plugins.push(dots)
+        } else {
+          config.plugins = [dots]
+        }
+        return config
       },
-    },
-    webpack: (config) => {
-      const dots = new Dotenv({ path, safe: true, defaults: true })
-      if (config.plugins) {
-        config.plugins.push(dots)
-      } else {
-        config.plugins = [dots]
-      }
-      return config
-    },
-  })
+    })
+  )
 )
