@@ -7,8 +7,8 @@ import { jsonStoreUrl } from "../utils/json-store.js"
 const details = {}
 
 export default (props) => {
-  const [questions, setQuestions] = useState(false)
-  const [message, setMessage] = useState(false)
+  const [questions, setQuestions] = useState()
+  const [message, setMessage] = useState()
 
   useEffect(() => {
     fetch(jsonStoreUrl("questions"))
