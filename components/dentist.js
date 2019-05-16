@@ -34,13 +34,11 @@ export default ({
         <>
           {details && (
             <small>
-              <sup>*</sup>
+              <sup>*&nbsp;</sup>
             </small>
           )}
-          &nbsp;
-          {single ? (
-            name
-          ) : (
+
+          {!single && (
             <Link prefetch href={{ pathname: "/place", query: { id } }}>
               <a>{name}</a>
             </Link>
