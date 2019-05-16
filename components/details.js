@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { jsonStoreUrl } from "../utils/json-store.js"
 
 export default ({ place_id }) => {
+  const [dirty, setDirty] = useState()
   const [questions, setQuestions] = useState()
   const [details, setDetails] = useState()
   const [message, setMessage] = useState()
@@ -53,6 +54,7 @@ export default ({ place_id }) => {
       .then((res) => res.json())
       .then((json) => {
         if (json.ok) {
+          setDirty(false)
           setMessage("Saved!")
           setDetails(deets)
           return
@@ -61,10 +63,12 @@ export default ({ place_id }) => {
       })
   }
 
+  const yup = dirty ? () => false : (ev) => setDirty(true)
+
   return (
     <div>
       <h2>Survey questions</h2>
-      {message && (
+      {!dirty && message && (
         <p>
           <b>{message}</b>
         </p>
@@ -74,15 +78,15 @@ export default ({ place_id }) => {
           {questions.map(({ text, key }) => (
             <label key={key}>
               {key.toUpperCase()}: {text}
-              <textarea name={key} defaultValue={details[key]} />
+              <textarea onChange={yup} name={key} defaultValue={details[key]} />
             </label>
           ))}
-          <button>Submit</button>
+          <button disabled={!dirty}>Submit</button>
         </form>
       ) : (
         <p>Loading...</p>
       )}
-      {message && (
+      {!dirty && message && (
         <p>
           <b>{message}</b>
         </p>

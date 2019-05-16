@@ -7,6 +7,7 @@ import { jsonStoreUrl } from "../utils/json-store.js"
 const details = {}
 
 export default (props) => {
+  const [dirty, setDirty] = useState()
   const [questions, setQuestions] = useState()
   const [message, setMessage] = useState()
 
@@ -29,6 +30,13 @@ export default (props) => {
     setQuestions(prompts)
   }
 
+  const yup = dirty
+    ? () => false
+    : (ev) => {
+        // console.log('yup', ev)
+        setDirty(true)
+      }
+
   const submit = (ev) => {
     ev.preventDefault()
     const x = Array.from(new FormData(ev.target).entries()).map(
@@ -46,6 +54,7 @@ export default (props) => {
       .then((res) => res.json())
       .then((json) => {
         if (json.ok) {
+          setDirty(false)
           setMessage("Saved!")
           setQuestions(x)
           return
@@ -56,7 +65,7 @@ export default (props) => {
 
   return (
     <div>
-      {message && (
+      {!dirty && message && (
         <p>
           <b>{message}</b>
         </p>
@@ -66,18 +75,23 @@ export default (props) => {
           {questions.map(({ text, key }) => (
             <label key={key}>
               {key.toUpperCase()}
-              <input type="text" name={key} defaultValue={text} />
+              <input
+                onChange={yup}
+                type="text"
+                name={key}
+                defaultValue={text}
+              />
             </label>
           ))}
           <button onClick={more} type="button">
             More
           </button>
-          <button>Submit</button>
+          <button disabled={!dirty}>Submit</button>
         </form>
       ) : (
         <p>Loading...</p>
       )}
-      {message && (
+      {!dirty && message && (
         <p>
           <b>{message}</b>
         </p>
