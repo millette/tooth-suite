@@ -45,15 +45,23 @@ export default (props) => {
     })
       .then((res) => res.json())
       .then((json) => {
-        if (json.ok) return setQuestions(x)
+        if (json.ok) {
+          setMessage("Saved!")
+          setQuestions(x)
+          return
+        }
         setMessage(`error: ${JSON.stringify(json)}`)
       })
   }
 
   return (
     <div>
-      {message && <p>{message}</p>}
-      {questions && (
+      {message && (
+        <p>
+          <b>{message}</b>
+        </p>
+      )}
+      {questions ? (
         <form onSubmit={submit}>
           {questions.map(({ text, key }) => (
             <label key={key}>
@@ -66,8 +74,14 @@ export default (props) => {
           </button>
           <button>Submit</button>
         </form>
+      ) : (
+        <p>Loading...</p>
       )}
-      {message && <p>{message}</p>}
+      {message && (
+        <p>
+          <b>{message}</b>
+        </p>
+      )}
     </div>
   )
 }

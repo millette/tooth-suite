@@ -52,19 +52,24 @@ export default ({ place_id }) => {
     })
       .then((res) => res.json())
       .then((json) => {
-        const { ok } = json
-        if (ok) return setDetails(deets)
+        if (json.ok) {
+          setMessage("Saved!")
+          setDetails(deets)
+          return
+        }
         setMessage(`error: ${JSON.stringify(json)}`)
       })
   }
 
   return (
     <div>
-      <h2>
-        Details <small>({place_id})</small>
-      </h2>
-      {message && <p>{message}</p>}
-      {details && (
+      <h2>Survey questions</h2>
+      {message && (
+        <p>
+          <b>{message}</b>
+        </p>
+      )}
+      {details ? (
         <form onSubmit={submit}>
           {questions.map(({ text, key }) => (
             <label key={key}>
@@ -74,8 +79,14 @@ export default ({ place_id }) => {
           ))}
           <button>Submit</button>
         </form>
+      ) : (
+        <p>Loading...</p>
       )}
-      {message && <p>{message}</p>}
+      {message && (
+        <p>
+          <b>{message}</b>
+        </p>
+      )}
     </div>
   )
 }
