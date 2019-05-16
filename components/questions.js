@@ -26,7 +26,6 @@ export default (props) => {
       ...questions,
       { key: `q${questions.length + 1}`, text: "" },
     ]
-    console.log("PROMPTS", prompts)
     setQuestions(prompts)
   }
 
