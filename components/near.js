@@ -90,8 +90,6 @@ const Thing = ({ router: { query } }) => {
 
   return (
     <div>
-      {details && <pre>{JSON.stringify(details, null, "  ")}</pre>}
-
       <div style={{ display: "flex", flexFlow: "row wrap" }}>
         <input
           style={{ flex: 1 }}
