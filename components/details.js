@@ -63,7 +63,7 @@ export default ({ place_id }) => {
       })
   }
 
-  const yup = dirty ? () => false : (ev) => setDirty(true)
+  const yup = dirty ? () => false : () => setDirty(true)
 
   return (
     <div>

@@ -30,12 +30,7 @@ export default (props) => {
     setQuestions(prompts)
   }
 
-  const yup = dirty
-    ? () => false
-    : (ev) => {
-        // console.log('yup', ev)
-        setDirty(true)
-      }
+  const yup = dirty ? () => false : () => setDirty(true)
 
   const submit = (ev) => {
     ev.preventDefault()
