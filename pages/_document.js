@@ -26,7 +26,6 @@ class MyDocument extends Document {
             integrity="sha256-a4zpugsKZqeQuXHZob2UNRXchaLIJRFdXCdi11HgAKY="
             crossOrigin="anonymous"
           />
-          <style />
         </Head>
         <body>
           <Main />
