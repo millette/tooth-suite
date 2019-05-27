@@ -50,7 +50,8 @@
   "healthier": {
     "globals": [
       "FormData",
-      "fetch"
+      "fetch",
+      "google"
     ]
   },
   "eslintConfig": {
