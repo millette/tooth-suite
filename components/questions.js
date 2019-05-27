@@ -4,8 +4,6 @@ import { useState, useEffect } from "react"
 // self
 import { jsonStoreUrl } from "../utils/json-store.js"
 
-const details = {}
-
 export default (props) => {
   const [dirty, setDirty] = useState()
   const [questions, setQuestions] = useState()

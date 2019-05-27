@@ -42,7 +42,7 @@ const Place = ({ router }) => {
   return (
     <>
       <h2>{place.name}</h2>
-      <Dentist {...place} single={true} />
+      <Dentist {...place} single />
       <Details {...place} />
     </>
   )

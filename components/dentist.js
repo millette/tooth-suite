@@ -2,7 +2,8 @@
 import Link from "next/link"
 
 // self
-import { locationKey, cachedNearbySearch } from "../utils/caching.js"
+// import { locationKey, cachedNearbySearch } from "../utils/caching.js"
+import { locationKey } from "../utils/caching.js"
 
 const style = {
   margin: "1.5rem 0",
