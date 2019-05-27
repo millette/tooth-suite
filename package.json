@@ -47,6 +47,17 @@
     "trailingComma": "es5",
     "arrowParens": "always"
   },
+  "healthier": {
+    "globals": [
+      "FormData",
+      "fetch"
+    ]
+  },
+  "eslintConfig": {
+    "rules": {
+      "camelcase": 0
+    }
+  },
   "devDependencies": {
     "ava": "^1.4.1",
     "coveralls": "^3.0.3",
