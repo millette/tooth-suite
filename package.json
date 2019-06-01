@@ -60,7 +60,7 @@
     }
   },
   "devDependencies": {
-    "ava": "^1.4.1",
+    "ava": "^2.0.0",
     "coveralls": "^3.0.3",
     "dotenv-webpack": "^1.7.0",
     "healthier": "^2.0.0",
